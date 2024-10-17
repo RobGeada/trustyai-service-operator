@@ -231,8 +231,8 @@ type LMEvalJobSpec struct {
 	// +optional
 	LogSamples *bool `json:"logSamples,omitempty"`
 	// Batch size for the evaluation. This is used by the models that run and are loaded
-	// locally and not apply for the commercial APIs.
-	BatchSize *int `json:"batchSize,omitempty"`
+	// locally, as well as the local_completions format, but may not apply for the commercial APIs.
+	BatchSize string `json:"batchSize,omitempty"`
 	// Specify extra information for the lm-eval job's pod
 	// +optional
 	Pod *LMEvalPodSpec `json:"pod,omitempty"`

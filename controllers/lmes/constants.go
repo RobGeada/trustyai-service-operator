@@ -29,15 +29,11 @@ const (
 	DriverImageKey             = "lmes-driver-image"
 	PodCheckingIntervalKey     = "lmes-pod-checking-interval"
 	ImagePullPolicyKey         = "lmes-image-pull-policy"
-	MaxBatchSizeKey            = "lmes-max-batch-size"
-	DefaultBatchSizeKey        = "lmes-default-batch-size"
 	DetectDeviceKey            = "lmes-detect-device"
 	DefaultPodImage            = "quay.io/trustyai/ta-lmes-job:latest"
 	DefaultDriverImage         = "quay.io/trustyai/ta-lmes-driver:latest"
 	DefaultPodCheckingInterval = time.Second * 10
 	DefaultImagePullPolicy     = corev1.PullAlways
-	DefaultMaxBatchSize        = 24
-	DefaultBatchSize           = 8
 	DefaultDetectDevice        = true
 	ServiceName                = "LMES"
 )

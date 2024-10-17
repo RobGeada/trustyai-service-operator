@@ -67,8 +67,6 @@ var (
 		"DriverImage":         DriverImageKey,
 		"PodCheckingInterval": PodCheckingIntervalKey,
 		"ImagePullPolicy":     ImagePullPolicyKey,
-		"DefaultBatchSize":    DefaultBatchSizeKey,
-		"MaxBatchSize":        MaxBatchSizeKey,
 		"DetectDevice":        DetectDeviceKey,
 	}
 
@@ -103,8 +101,6 @@ type ServiceOptions struct {
 	DriverImage         string
 	PodCheckingInterval time.Duration
 	ImagePullPolicy     corev1.PullPolicy
-	MaxBatchSize        int
-	DefaultBatchSize    int
 	DetectDevice        bool
 }
 
@@ -331,9 +327,7 @@ func (r *LMEvalJobReconciler) constructOptionsFromConfigMap(
 		PodImage:            DefaultPodImage,
 		PodCheckingInterval: DefaultPodCheckingInterval,
 		ImagePullPolicy:     DefaultImagePullPolicy,
-		MaxBatchSize:        DefaultMaxBatchSize,
 		DetectDevice:        DefaultDetectDevice,
-		DefaultBatchSize:    DefaultBatchSize,
 	}
 
 	log := log.FromContext(ctx)
@@ -841,16 +835,9 @@ func (r *LMEvalJobReconciler) generateArgs(job *lmesv1alpha1.LMEvalJob, log logr
 		cmds = append(cmds, "--log_samples")
 	}
 	// --batch_size
-	var batchSize = r.options.DefaultBatchSize
-	if job.Spec.BatchSize != nil && *job.Spec.BatchSize > 0 {
-		batchSize = *job.Spec.BatchSize
+	if job.Spec.BatchSize != "" {
+		cmds = append(cmds, "--batch_size", job.Spec.BatchSize)
 	}
-	// This could be done in the webhook if it's enabled.
-	if batchSize > r.options.MaxBatchSize {
-		batchSize = r.options.MaxBatchSize
-		log.Info("batchSize is greater than max-batch-size of the controller's configuration, use the max-batch-size instead")
-	}
-	cmds = append(cmds, "--batch_size", fmt.Sprintf("%d", batchSize))
 
 	return []string{"sh", "-ec", strings.Join(cmds, " ")}
 }

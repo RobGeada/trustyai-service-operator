@@ -668,11 +668,9 @@ func Test_GenerateArgBatchSize(t *testing.T) {
 	lmevalRec := LMEvalJobReconciler{
 		Namespace: "test",
 		options: &ServiceOptions{
-			PodImage:         "podimage:latest",
-			DriverImage:      "driver:latest",
-			ImagePullPolicy:  corev1.PullAlways,
-			MaxBatchSize:     24,
-			DefaultBatchSize: 8,
+			PodImage:        "podimage:latest",
+			DriverImage:     "driver:latest",
+			ImagePullPolicy: corev1.PullAlways,
 		},
 	}
 	var job = &lmesv1alpha1.LMEvalJob{
@@ -696,23 +694,15 @@ func Test_GenerateArgBatchSize(t *testing.T) {
 		},
 	}
 
-	// no batchSize in the job, use default batchSize
+	// no batchSize in the job, do not specify batch size
 	assert.Equal(t, []string{
 		"sh", "-ec",
-		"python -m lm_eval --output_path /opt/app-root/src/output --model test --model_args arg1=value1 --tasks task1,task2 --include_path /opt/app-root/src/my_tasks --batch_size 8",
-	}, lmevalRec.generateArgs(job, log))
-
-	// exceed the max-batch-size, use max-batch-size
-	var biggerBatchSize = 30
-	job.Spec.BatchSize = &biggerBatchSize
-	assert.Equal(t, []string{
-		"sh", "-ec",
-		"python -m lm_eval --output_path /opt/app-root/src/output --model test --model_args arg1=value1 --tasks task1,task2 --include_path /opt/app-root/src/my_tasks --batch_size 24",
+		"python -m lm_eval --output_path /opt/app-root/src/output --model test --model_args arg1=value1 --tasks task1,task2 --include_path /opt/app-root/src/my_tasks",
 	}, lmevalRec.generateArgs(job, log))
 
 	// normal batchSize
-	var normalBatchSize = 16
-	job.Spec.BatchSize = &normalBatchSize
+	var normalBatchSize = "16"
+	job.Spec.BatchSize = normalBatchSize
 	assert.Equal(t, []string{
 		"sh", "-ec",
 		"python -m lm_eval --output_path /opt/app-root/src/output --model test --model_args arg1=value1 --tasks task1,task2 --include_path /opt/app-root/src/my_tasks --batch_size 16",
@@ -724,11 +714,9 @@ func Test_GenerateArgCmdTaskRecipes(t *testing.T) {
 	lmevalRec := LMEvalJobReconciler{
 		Namespace: "test",
 		options: &ServiceOptions{
-			PodImage:         "podimage:latest",
-			DriverImage:      "driver:latest",
-			ImagePullPolicy:  corev1.PullAlways,
-			DefaultBatchSize: DefaultBatchSize,
-			MaxBatchSize:     DefaultMaxBatchSize,
+			PodImage:        "podimage:latest",
+			DriverImage:     "driver:latest",
+			ImagePullPolicy: corev1.PullAlways,
 		},
 	}
 	var format = "unitxt.format"
@@ -810,11 +798,9 @@ func Test_GenerateArgCmdCustomCard(t *testing.T) {
 	lmevalRec := LMEvalJobReconciler{
 		Namespace: "test",
 		options: &ServiceOptions{
-			PodImage:         "podimage:latest",
-			DriverImage:      "driver:latest",
-			ImagePullPolicy:  corev1.PullAlways,
-			DefaultBatchSize: DefaultBatchSize,
-			MaxBatchSize:     DefaultMaxBatchSize,
+			PodImage:        "podimage:latest",
+			DriverImage:     "driver:latest",
+			ImagePullPolicy: corev1.PullAlways,
 		},
 	}
 	var format = "unitxt.format"

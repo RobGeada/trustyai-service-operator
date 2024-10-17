@@ -173,11 +173,7 @@ func (in *LMEvalJobSpec) DeepCopyInto(out *LMEvalJobSpec) {
 		*out = new(bool)
 		**out = **in
 	}
-	if in.BatchSize != nil {
-		in, out := &in.BatchSize, &out.BatchSize
-		*out = new(int)
-		**out = **in
-	}
+
 	if in.Pod != nil {
 		in, out := &in.Pod, &out.Pod
 		*out = new(LMEvalPodSpec)
