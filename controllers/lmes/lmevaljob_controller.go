@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/trustyai-explainability/trustyai-service-operator/controllers/metrics"
 	"github.com/trustyai-explainability/trustyai-service-operator/controllers/utils"
 	"maps"
 	"slices"
@@ -466,6 +467,14 @@ func (r *LMEvalJobReconciler) handleNewCR(ctx context.Context, log logr.Logger, 
 		return ctrl.Result{}, err
 	}
 
+	// Update the Prometheus metrics
+	for _, task := range job.Spec.TaskList.TaskNames {
+		counterName := "lmevalharness_" + task
+		log.Info("Creating a new LMEvalJob metric", "name", job.Name, "counter", counterName)
+		counter := metrics.GetOrCreateCounter(counterName, "Number of times this task has been scheduled")
+		counter.Inc()
+	}
+
 	// Create the pod successfully. Wait for the driver to update the status
 	job.Status.State = lmesv1alpha1.ScheduledJobState
 	job.Status.PodName = job.GetPodName()
@@ -820,8 +829,8 @@ func CreatePod(svcOpts *serviceOptions, job *lmesv1alpha1.LMEvalJob, log logr.Lo
 	var volumes = []corev1.Volume{
 		{
 			Name: "shared", VolumeSource: corev1.VolumeSource{
-				EmptyDir: &corev1.EmptyDirVolumeSource{},
-			},
+			EmptyDir: &corev1.EmptyDirVolumeSource{},
+		},
 		},
 	}
 
