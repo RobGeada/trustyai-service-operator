@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: service-monitor
     app.kubernetes.io/component: metrics
     app.kubernetes.io/created-by: trustyai-service-operator
-    app.kubernetes.io/part-of: trustyai-service-operator
+    app.kubernetes.io/part-of: trustyai
     app.kubernetes.io/managed-by: kustomize
   name: service-monitor
   namespace: system
@@ -16,4 +16,4 @@ spec:
       port: metrics
   selector:
     matchLabels:
-      app.kubernetes.io/part-of: trustyai-service-operator
+      app.kubernetes.io/part-of: trustyai
