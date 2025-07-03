@@ -5,7 +5,7 @@ metadata:
     control-plane: controller-manager
     app.kubernetes.io/instance: metrics-service
     app.kubernetes.io/created-by: trustyai-service-operator
-    app.kubernetes.io/part-of: trustyai-service-operator
+    app.kubernetes.io/part-of: trustyai
     app.kubernetes.io/managed-by: kustomize
   name: metrics-service
   namespace: system
@@ -16,4 +16,4 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app.kubernetes.io/part-of: trustyai-service-operator
+    app.kubernetes.io/part-of: trustyai
