@@ -4,11 +4,11 @@ metadata:
   labels:
     control-plane: controller-manager
     app.kubernetes.io/name: service
-    app.kubernetes.io/instance: trustyai-service-operator-metrics-service
+    app.kubernetes.io/instance: metrics-service
     app.kubernetes.io/created-by: trustyai-service-operator
     app.kubernetes.io/part-of: trustyai-service-operator
     app.kubernetes.io/managed-by: kustomize
-  name: trustyai-service-operator-metrics-service
+  name: metrics-service
   namespace: system
 spec:
   ports:
