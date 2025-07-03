@@ -3,7 +3,6 @@ kind: Service
 metadata:
   labels:
     control-plane: controller-manager
-    app.kubernetes.io/name: service
     app.kubernetes.io/instance: metrics-service
     app.kubernetes.io/created-by: trustyai-service-operator
     app.kubernetes.io/part-of: trustyai-service-operator
@@ -17,4 +16,4 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app.kubernetes.io/name: trustyai
+    app.kubernetes.io/part-of: trustyai-service-operator
