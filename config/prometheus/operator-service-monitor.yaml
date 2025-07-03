@@ -3,7 +3,6 @@ kind: ServiceMonitor
 metadata:
   labels:
     control-plane: controller-manager
-    app.kubernetes.io/name: servicemonitor
     app.kubernetes.io/instance: service-monitor
     app.kubernetes.io/component: metrics
     app.kubernetes.io/created-by: trustyai-service-operator
@@ -17,4 +16,4 @@ spec:
       port: metrics
   selector:
     matchLabels:
-      app.kubernetes.io/name: trustyai
+      app.kubernetes.io/part-of: trustyai-service-operator
