@@ -402,6 +402,27 @@ func (r *LMEvalJobReconciler) handleDeletion(ctx context.Context, job *lmesv1alp
 	return ctrl.Result{}, nil
 }
 
+func createJobCreationMetrics(log logr.Logger, job *lmesv1alpha1.LMEvalJob) {
+	// Update the Prometheus metrics
+	log.Info("Creating a new LMEvalJob metric", "name", job.Name)
+	for _, task := range job.Spec.TaskList.TaskNames {
+		labels := make(map[string]string)
+		labels["framework"] = "lm-evaluation-harness"
+		labels["model_type"] = job.Spec.Model
+		labels["task"] = task
+
+		modelArgs := make([]string, len(job.Spec.ModelArgs))
+		for i, arg := range job.Spec.ModelArgs {
+			modelArgs[i] = arg.Name + ":" + arg.Value
+		}
+		labels["model_args"] = strings.Join(modelArgs, ",")
+		labels["eval_job_namespace"] = job.Namespace
+
+		counter := metrics.GetOrCreateEvalCounter(labels)
+		counter.Inc()
+	}
+}
+
 func (r *LMEvalJobReconciler) handleNewCR(ctx context.Context, log logr.Logger, job *lmesv1alpha1.LMEvalJob) (reconcile.Result, error) {
 	// If it doesn't contain our finalizer, add it
 	if !controllerutil.ContainsFinalizer(job, lmesv1alpha1.FinalizerName) {
@@ -467,13 +488,8 @@ func (r *LMEvalJobReconciler) handleNewCR(ctx context.Context, log logr.Logger, 
 		return ctrl.Result{}, err
 	}
 
-	// Update the Prometheus metrics
-	for _, task := range job.Spec.TaskList.TaskNames {
-		counterName := "lmevalharness_" + task
-		log.Info("Creating a new LMEvalJob metric", "name", job.Name, "counter", counterName)
-		counter := metrics.GetOrCreateCounter(counterName, "Number of times this task has been scheduled")
-		counter.Inc()
-	}
+	// Create metrics
+	createJobCreationMetrics(log, job)
 
 	// Create the pod successfully. Wait for the driver to update the status
 	job.Status.State = lmesv1alpha1.ScheduledJobState
