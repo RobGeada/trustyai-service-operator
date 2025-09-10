@@ -39,7 +39,7 @@ func (r *GuardrailsOrchestratorReconciler) configureOAuth(ctx context.Context, o
 		Name:             orchestrator.Name,
 		OAuthProxyImage:  oAuthImage,
 		DownstreamPort:   8432,
-		UpstreamProtocol: "https",
+		UpstreamProtocol: "http",
 		UpstreamPort:     8032,
 	}
 	if orchestrator.Spec.EnableGuardrailsGateway {
