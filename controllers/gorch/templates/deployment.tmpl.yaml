@@ -55,6 +55,7 @@
             - '--tls-cert=/etc/tls/private/tls.crt'
             - '--tls-key=/etc/tls/private/tls.key'
             - '--upstream={{.UpstreamProtocol}}://{{.UpstreamHost}}:{{.UpstreamPort}}'
+            - '--upstream-ca=/etc/tls/ca/service-ca.crt'
             - '--skip-auth-regex=''(^/apis/v1beta1/healthz)'''
             - >-
               --openshift-sar={"namespace":"{{ .Namespace }}","resource":"pods","verb":"get"}
