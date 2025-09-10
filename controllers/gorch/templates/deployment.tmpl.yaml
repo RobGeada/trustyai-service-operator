@@ -54,7 +54,7 @@
             - '--pass-user-bearer-token'
             - '--tls-cert=/etc/tls/private/tls.crt'
             - '--tls-key=/etc/tls/private/tls.key'
-            - '--upstream={{.UpstreamProtocol}}://localhost:{{.UpstreamPort}}'
+            - '--upstream={{.UpstreamProtocol}}://{{.UpstreamHost}}:{{.UpstreamPort}}'
             - '--skip-auth-regex=''(^/apis/v1beta1/healthz)'''
             - >-
               --openshift-sar={"namespace":"{{ .Namespace }}","resource":"pods","verb":"get"}
@@ -132,6 +132,10 @@ spec:
               value: '8032'
             - name: RUST_BACKTRACE
               value: 'full'
+            - name: TLS_CERT_PATH
+              value: /etc/tls/private/tls.crt
+            - name: TLS_KEY_PATH
+              value: /etc/tls/private/tls.key
             - name: RUST_LOG
               value: '{{if .Orchestrator.Spec.LogLevel}}{{.Orchestrator.Spec.LogLevel}}{{else}}info{{end}}'
             {{- if .Orchestrator.Spec.OtelExporter.Protocol }}

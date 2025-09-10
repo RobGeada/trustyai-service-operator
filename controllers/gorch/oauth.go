@@ -14,6 +14,7 @@ type OAuthConfig struct {
 	Namespace        string
 	OAuthProxyImage  string
 	UpstreamProtocol string
+	UpstreamHost     string
 	UpstreamPort     int
 	DownstreamPort   int
 }
@@ -39,7 +40,8 @@ func (r *GuardrailsOrchestratorReconciler) configureOAuth(ctx context.Context, o
 		Name:             orchestrator.Name,
 		OAuthProxyImage:  oAuthImage,
 		DownstreamPort:   8432,
-		UpstreamProtocol: "http",
+		UpstreamProtocol: "https",
+		UpstreamHost:     orchestratorName + "-service", // use full service name to avoid certificate validation issues
 		UpstreamPort:     8032,
 	}
 	if orchestrator.Spec.EnableGuardrailsGateway {
@@ -50,6 +52,7 @@ func (r *GuardrailsOrchestratorReconciler) configureOAuth(ctx context.Context, o
 			OAuthProxyImage:  oAuthImage,
 			DownstreamPort:   8490,
 			UpstreamProtocol: "http",
+			UpstreamHost:     "localhost",
 			UpstreamPort:     8090,
 		}
 	}
