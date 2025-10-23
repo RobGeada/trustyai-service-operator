@@ -263,3 +263,12 @@ catalog-build: opm ## Build a catalog image.
 .PHONY: catalog-push
 catalog-push: ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
+
+# Generate the full set of manifests to deploy the TrustyAI operator, with a customizable deployment namespace and operator image
+manifest-gen:
+	@echo "Usage: make release NAMESPACE=<namespace> OPERATOR_IMAGE=<image>"
+	@echo "Example: make release NAMESPACE=my-namespace OPERATOR_IMAGE=quay.io/myorg/trustyai-service-operator:latest"
+	@if [ -z "$(NAMESPACE)" ]; then echo "Error: NAMESPACE argument is required"; exit 1; fi
+	@if [ -z "$(OPERATOR_IMAGE)" ]; then echo "Error: OPERATOR_IMAGE argument is required"; exit 1; fi
+	$(KUSTOMIZE) build config/base | sed "s|namespace: system|namespace: $(NAMESPACE)|g" | sed "s|quay.io/trustyai/trustyai-service-operator:latest|$(OPERATOR_IMAGE)|g" > release/trustyai_bundle.yaml
+	@echo "Release manifest generated at release/trustyai_bundle.yaml with namespace '$(NAMESPACE)' and operator image '$(OPERATOR_IMAGE)'"
